@@ -1,36 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Text Bubble Display</title>
-<style>
-    .container {
-        position: relative;
-        width: 300px;
-        margin: 50px auto;
-    }
-    .bubble {
-        position: absolute;
-        background-color: #19747a;
-        border: 1px solid #9e1a1a;
-        border-radius: 5px;
-        padding: 10px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        display: none;
-    }
-</style>
-</head>
-<body>
-
-<div class="container">
-    <input type="text" id="textInput" placeholder="Type here and press Enter">
-    <div id="bubble" class="bubble"></div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/socket.io@4.3.1/dist/socket.io.js"></script>
-
-<script src="./script.js"></script>
-
-</body>
-</html>
+    <head> 
+        <title>C&L IM</title> 
+        <script src="https://cdn.tailwindcss.com"></script> 
+    </head> 
+      
+    <body> 
+        <h1 class="font-bold text-blue-500  
+                   text-3xl text-center mt-5"> 
+              C&L Instant Message App 
+          </h1> 
+        <div> 
+            <h2 class="font-semibold text-xl  
+                       text-center mt-5"  
+                id="logo"> 
+                  I.M. App using Socket io 
+              </h2> 
+        </div> 
+        <form class="flex flex-col justify-center  
+                     items-center mt-5"  
+              id="form"> 
+            <input class="border border-grey-400  
+                          rounded-md mt-5 p-1"  
+                   type="text" 
+                   placeholder="Name" 
+                   id="myname"> 
+            <input class="border border-gray-400  
+                          rounded-md mt-5 p-1"  
+                   type="text" 
+                   placeholder="Message" 
+                   id="message"> 
+            <button class="bg-blue-500 rounded-md p-2  
+                           text-white mt-5"> 
+                  Send 
+              </button> 
+        </form> 
+        <div class="flex flex-col justify-center  
+                    items-center mt-5"  
+             id="messageArea"> 
+        </div> 
+    </body> 
+    <script src="/socket.io/socket.io.js"></script> 
+    <script> 
+        let socket = io(); 
+      
+        let form = document.getElementById('form'); 
+        let myname = document.getElementById('myname'); 
+        let message = document.getElementById('message'); 
+        let messageArea = document.getElementById("messageArea"); 
+      
+        form.addEventListener("submit", (e) => { 
+            e.preventDefault(); 
+      
+            if (message.value) { 
+                socket.emit('send name', myname.value); 
+                socket.emit('send message', message.value); 
+                message.value = ""; 
+            } 
+        }); 
+      
+        socket.on("send name", (username) => { 
+            let name = document.createElement("p"); 
+            name.style.backgroundColor = "green"; 
+            name.style.width = "50%"; 
+            name.style.textAlign = "center"; 
+            name.style.color = "white"; 
+            name.textContent = username + ":"; 
+            messageArea.appendChild(name); 
+        }); 
+      
+        socket.on("send message", (chat) => { 
+            let chatContent = document.createElement("p"); 
+            chatContent.textContent = chat; 
+            messageArea.appendChild(chatContent); 
+        }); 
+    </script> 
+      
+    </html>
